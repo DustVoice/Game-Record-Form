@@ -19,7 +19,7 @@ It alternates between a full A4 page and two A5 pages printed on a single A4 she
 
 ## PDF generation
 
-You can find a pregenerated PDF under the Releases section in GitHub, do keep in mind though, that I probably won't be updating it that frequently.
+You can find a pregenerated PDF under the [Releases section within GitHub](https://github.com/DustVoice/Game-Record-Form/releases), do keep in mind though, that I probably won't be updating it that frequently.
 
 > Creating an account on [typst.app](https://typst.app) should be free and enables you to simply copy and paste the single file into the editor, make changes and generate an up-to-date PDF, all without installing anything.
 >
