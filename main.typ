@@ -8,8 +8,10 @@
   spacing: 10mm,
   line-width: .2mm,
   board-size: 19,
-  comment-rows: 2,
-  print-on-bigger: true,
+  overlap-rows: 2,
+  print-on-bigger: false,
+  base-color: green,
+  lightening: 50%,
 ) = {
   let (width, height) = if page-size == "a4" {
     (210mm, 297mm)
@@ -37,7 +39,7 @@
     panic("Unsupported board-size provided: " + board-size)
   }.map(val => (val.at(0) - 1, val.at(1) - 1))
   
-  let color = green.mix((white, 50%));
+  let color = base-color.lighten(lightening);
 
   let line_normal = (paint: color, thickness: line-width);
 
@@ -145,18 +147,18 @@
         // Circles
         for row in range(board-size) {
           for col in range(board-size) {
-            circle((col, row), radius: spacing / 2, fill: none, stroke: (paint: color.mix((white, 100%)), thickness: line-width))
+            circle((col, row), radius: spacing / 2, fill: none, stroke: (paint: color.lighten(lightening), thickness: line-width))
           }
         }
       })
     )
 
     // Move mappings / Comments
-    #if (comment-rows > 0) {
+    #if (overlap-rows > 0) {
       titlebox(
         [_Current_ Move #sym.numero #sym.mapsto _Already present_ Move #sym.numero ],
         stack[
-          #duplicate(comment-rows,
+          #duplicate(overlap-rows,
             repeat(gap: .5em)[#box(width: spacing, underline_box) #sym.mapsto #box(width: spacing, underline_box)] 
           )
         ]
@@ -192,35 +194,40 @@
   }
 }
 
-#gen(print-on-bigger: false)
+// 19x19 - A4
+#gen()
 
+// 19x19 - A4 (2 on 1)
 #gen(
+  print-on-bigger: true,
   page-size: "a5",
   spacing: 5mm,
-  comment-rows: 3,
+  overlap-rows: 3,
   line-width: .1mm)
-  
-// #gen(
-//   page-size: "a6",
-//   spacing: 5mm,
-//   board-size: 19,
-//   comment-rows: 1)
 
-#gen(
-  print-on-bigger: false,
-  board-size: 13)
-  
+// 13x13 - A4
+#gen(board-size: 13)
+
+// 13x13 - A4 (2 on 1)
 #gen(
   board-size: 13,
+  print-on-bigger: true,
   page-size: "a5",
   spacing: 7.5mm)
-  
+
+// 9x9 - A4
 #gen(
-  print-on-bigger: false,
   board-size: 9,
   spacing: 15mm)
 
+// 9x9 - A4 (2 on 1)
 #gen(
   board-size: 9,
+  print-on-bigger: true,
   page-size: "a5",
   spacing: 10mm)
+
+// 19x19 - A4 - ePaper optimized
+#gen(
+  line-width: 0.25mm,
+  base-color: black)
