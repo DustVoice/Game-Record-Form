@@ -8,10 +8,13 @@
   spacing: 10mm,
   line-width: .2mm,
   board-size: 19,
-  overlap-rows: 2,
+  overlap-rows: 4,
+  overlap-separator: sym.mapsto,
+  overlap-spacing: 10mm,
   print-on-bigger: false,
-  base-color: green,
-  lightening: 50%,
+  base-color: luma(25%),
+  grid-color: green.lighten(50%),
+  circle-color: green.lighten(75%),
 ) = {
   let (width, height) = if page-size == "a4" {
     (210mm, 297mm)
@@ -22,6 +25,8 @@
   } else {
     panic("Unsupported page-size provided: " + page-size)
   }
+
+  set text(size: if page-size == "a4" { 11pt } else if page-size == "a5" { 8pt } else { 7pt })
 
   let hoshi = if board-size == 19 {
     ((16, 4), (16, 10), (16, 16),
@@ -38,12 +43,8 @@
   } else {
     panic("Unsupported board-size provided: " + board-size)
   }.map(val => (val.at(0) - 1, val.at(1) - 1))
-  
-  let color = base-color.lighten(lightening);
 
-  let line_normal = (paint: color, thickness: line-width);
-
-  let text_color = luma(25%);     
+  let line_normal = (paint: grid-color, thickness: line-width);
     
   let underline_box = box(width: 1fr, line(length: 100%, stroke: (dash: "dotted")))
 
@@ -64,18 +65,18 @@
 
   let comment-cols = calc.floor(width_avail / (spacing * 2))
 
-  set text(fill: text_color)
-  set line(stroke: text_color)
+  set text(fill: base-color)
+  set line(stroke: base-color)
   
   let titlebox(height: auto, title, body) = showybox(
     frame: (
-      border-color: text_color,
-      inset: 1em,
+      border-color: base-color,
+      inset: .5em,
       title-color: white,
       thickness: line-width
     ),
     title-style: (
-      color: text_color,
+      color: base-color,
       align: center,
       boxed-style: (
         anchor: (
@@ -141,13 +142,13 @@
     
         // Star points
         for h in hoshi {
-          circle(h, radius: 4 * line-width, fill: color, stroke: none)
+          circle(h, radius: 4 * line-width, fill: grid-color, stroke: none)
         }
     
         // Circles
         for row in range(board-size) {
           for col in range(board-size) {
-            circle((col, row), radius: spacing / 2, fill: none, stroke: (paint: color.lighten(lightening), thickness: line-width))
+            circle((col, row), radius: spacing / 2, fill: none, stroke: (paint: circle-color, thickness: line-width))
           }
         }
       })
@@ -156,10 +157,10 @@
     // Move mappings / Comments
     #if (overlap-rows > 0) {
       titlebox(
-        [_Current_ Move #sym.numero #sym.mapsto _Already present_ Move #sym.numero ],
+        [*Current* Move #sym.numero #overlap-separator *Existing* Move #sym.numero ],
         stack[
           #duplicate(overlap-rows,
-            repeat(gap: .5em)[#box(width: spacing, underline_box) #sym.mapsto #box(width: spacing, underline_box)] 
+            repeat(gap: .5em)[#box(width: overlap-spacing, underline_box) #overlap-separator #box(width: overlap-spacing, underline_box)] 
           )
         ]
       )
@@ -201,8 +202,7 @@
 #gen(
   print-on-bigger: true,
   page-size: "a5",
-  spacing: 5mm,
-  overlap-rows: 3,
+  spacing: 7mm,
   line-width: .1mm)
 
 // 13x13 - A4
@@ -227,7 +227,9 @@
   page-size: "a5",
   spacing: 10mm)
 
-// 19x19 - A4 - ePaper optimized
+// 19x19 - A4 - ePaper
 #gen(
   line-width: 0.25mm,
-  base-color: black)
+  base-color: luma(0%),
+  grid-color: luma(33.3%),
+  circle-color: luma(66.6%))
