@@ -8,10 +8,10 @@
   spacing: 10mm,
   line-width: .2mm,
   board-size: 19,
-  overlap-rows: 4,
-  overlap-separator: sym.mapsto,
-  overlap-style: "parens",
-  overlap-spacing: 10mm,
+  ko-rows: 4,
+  ko-separator: sym.mapsto,
+  ko-style: "parens",
+  ko-spacing: 10mm,
   print-on-bigger: false,
   base-color: luma(25%),
   grid-color: green.lighten(50%),
@@ -27,7 +27,8 @@
     panic("Unsupported page-size provided: " + page-size)
   }
 
-  set text(size: if page-size == "a4" { 11pt } else if page-size == "a5" { 8pt } else { 7pt })
+  let text-size = if page-size == "a4" { 11pt } else if page-size == "a5" { 8pt } else { 7pt }
+  set text(size: text-size)
 
   let hoshi = if board-size == 19 {
     ((16, 4), (16, 10), (16, 16),
@@ -156,22 +157,29 @@
     )
 
     // Move mappings / Comments
-    #if (overlap-rows > 0) {
-      if (overlap-style == "parens") {
+    #if (ko-rows > 0) {
+      if (ko-style == "plain") {
+        titlebox(
+          [Ko],
+          stack[
+            #duplicate(ko-rows, [#sym.space])
+          ]
+        )
+      } else if (ko-style == "parens") {
         titlebox(
           [*Current* Move #sym.numero ( *Existing* Move #sym.numero )],
           stack[
-            #duplicate(overlap-rows,
-              repeat(gap: .5em)[#box(width: overlap-spacing/2, underline_box) ( #box(width: overlap-spacing/2, underline_box) ),] 
+            #duplicate(ko-rows,
+              repeat(gap: .5em)[#box(width: ko-spacing/2, underline_box) ( #box(width: ko-spacing/2, underline_box) ),] 
             )
           ]
         )
-      } else if (overlap-style == "separator") {
+      } else if (ko-style == "separator") {
         titlebox(
-          [*Current* Move #sym.numero #overlap-separator *Existing* Move #sym.numero ],
+          [*Current* Move #sym.numero #ko-separator *Existing* Move #sym.numero ],
           stack[
-            #duplicate(overlap-rows,
-              repeat(gap: .5em)[#box(width: overlap-spacing, underline_box) #overlap-separator #box(width: overlap-spacing, underline_box)] 
+            #duplicate(ko-rows,
+              repeat(gap: .5em)[#box(width: ko-spacing, underline_box) #ko-separator #box(width: ko-spacing, underline_box)] 
             )
           ]
         ) 
