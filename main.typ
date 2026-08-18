@@ -10,6 +10,7 @@
   board-size: 19,
   overlap-rows: 4,
   overlap-separator: sym.mapsto,
+  overlap-style: "parens",
   overlap-spacing: 10mm,
   print-on-bigger: false,
   base-color: luma(25%),
@@ -156,14 +157,25 @@
 
     // Move mappings / Comments
     #if (overlap-rows > 0) {
-      titlebox(
-        [*Current* Move #sym.numero #overlap-separator *Existing* Move #sym.numero ],
-        stack[
-          #duplicate(overlap-rows,
-            repeat(gap: .5em)[#box(width: overlap-spacing, underline_box) #overlap-separator #box(width: overlap-spacing, underline_box)] 
-          )
-        ]
-      )
+      if (overlap-style == "parens") {
+        titlebox(
+          [*Current* Move #sym.numero ( *Existing* Move #sym.numero )],
+          stack[
+            #duplicate(overlap-rows,
+              repeat(gap: .5em)[#box(width: overlap-spacing/2, underline_box) ( #box(width: overlap-spacing/2, underline_box) ),] 
+            )
+          ]
+        )
+      } else if (overlap-style == "separator") {
+        titlebox(
+          [*Current* Move #sym.numero #overlap-separator *Existing* Move #sym.numero ],
+          stack[
+            #duplicate(overlap-rows,
+              repeat(gap: .5em)[#box(width: overlap-spacing, underline_box) #overlap-separator #box(width: overlap-spacing, underline_box)] 
+            )
+          ]
+        ) 
+      }
     }
   ]
   
